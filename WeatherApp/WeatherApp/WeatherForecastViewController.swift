@@ -1,10 +1,10 @@
 import UIKit
 import CoreData
 
-class WeatherForecastViewController: UITableViewController {
+class WeatherForecastViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     private lazy var service = WeatherService(container: UIApplication.container)
     private let df = DateFormatter()
-    @IBOutlet weak var locationLabel: UILabel!
+    @IBOutlet weak var tableView: UITableView!
     lazy var forecastFRC : NSFetchedResultsController<ForecastMO> = {
         let request : NSFetchRequest<ForecastMO> = ForecastMO.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(key:"weather.location.name",ascending : true),
@@ -31,6 +31,9 @@ class WeatherForecastViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         df.dateFormat = "dd MMM yyyy"
         performFetch()
         loadData()
@@ -52,7 +55,7 @@ class WeatherForecastViewController: UITableViewController {
         }
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ForecastCell", for: indexPath)
         if let forecastCell = cell as? ForecastCell,
             let items = forecastFRC.fetchedObjects {
@@ -65,7 +68,7 @@ class WeatherForecastViewController: UITableViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let objects = forecastFRC.fetchedObjects
         else { return 0 }
         return objects.count

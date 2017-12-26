@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import CoreData
 
-class SettingsController : UIViewController, UITextFieldDelegate, UITableViewDataSource {
+class SettingsController : UIViewController, UITextFieldDelegate, UITableViewDataSource,UITableViewDelegate {
     @IBOutlet weak var inputCityTextField: UITextField!
     @IBOutlet weak var getForecastButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
@@ -26,6 +26,7 @@ class SettingsController : UIViewController, UITextFieldDelegate, UITableViewDat
         super.viewDidLoad()
         performFetch()
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         inputCityTextField.delegate = self
     }
